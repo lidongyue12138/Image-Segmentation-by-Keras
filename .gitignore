@@ -105,3 +105,7 @@ ENV/
 .ropeproject
 
 
+*.jpg
+*.txt
+*.png
+Datasets/CUB_200_2011/README
