@@ -10,13 +10,13 @@ train_segs_path = "./Datasets/CUB_200_2011/train/segs/"
 test_images_path = "./Datasets/CUB_200_2011/test/imgs/"
 test_segs_path = "./Datasets/CUB_200_2011/test/segs"
 
-model = keras_segmentation.models.fcn.fcn_8_vgg(n_classes=2 ,  input_height=416, input_width=608  )
+model = keras_segmentation.models.fcn.fcn_8(n_classes=2 ,  input_height=416, input_width=608  )
 # model.load_weights("./tmp/vgg_unet_1.1")
 
 model.train( 
     train_images =  train_images_path,
     train_annotations = train_segs_path,
-    checkpoints_path = "./tmp/fcn_fcn_8_vgg" , epochs=4
+    checkpoints_path = "./tmp/fcn_fcn_8" , epochs=4
 )
 
 # out = model.predict_segmentation(
