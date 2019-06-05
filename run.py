@@ -1,10 +1,13 @@
 import keras_segmentation
 import os
 
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1,2,3" 
+
 images_path = "./Datasets/CUB_200_2011/train/imgs/"
 segs_path = "./Datasets/CUB_200_2011/train/segs/"
 
-model = keras_segmentation.models.unet.vgg_unet(n_classes=2 ,  input_height=416, input_width=608  )
+model = keras_segmentation.models.fcn.fcn_8(n_classes=2 ,  input_height=416, input_width=608  )
 
 model.train( 
     train_images =  images_path,
