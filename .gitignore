@@ -109,3 +109,5 @@ ENV/
 *.txt
 *.png
 Datasets/CUB_200_2011/README
+tmp/vgg_unet_1.0
+tmp/vgg_unet_1.1
