@@ -148,9 +148,6 @@ def fcn_32_mobilenet(n_classes ,  input_height=416, input_width=608 ):
 	return model
 
 
-
-
-
 if __name__ == '__main__':
 	m = fcn_8( 101 )
 	m = fcn_32( 101 )

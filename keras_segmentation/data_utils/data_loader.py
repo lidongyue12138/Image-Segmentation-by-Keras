@@ -119,7 +119,7 @@ def verify_segmentation_dataset( images_path , segs_path , n_classes ):
 def image_segmentation_generator( images_path , segs_path ,  batch_size,  n_classes , input_height , input_width , output_height , output_width  , do_augment=False ):
 	
 
-	img_seg_pairs = get_pairs_from_paths( images_path , segs_path )
+	img_seg_pairs = get_pairs_from_paths( images_path , segs_path, recursive=False)
 	random.shuffle( img_seg_pairs )
 	zipped = itertools.cycle( img_seg_pairs  )
  
