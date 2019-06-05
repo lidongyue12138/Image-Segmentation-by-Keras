@@ -107,8 +107,6 @@ def predict_multiple( model=None , inps=None , inp_dir=None, out_dir=None , chec
 
 
 def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path=None ):
-	
-	assert False , "not implemented "
 
 	ious = []
 	for inp , ann   in tqdm( zip( inp_images , annotations )):

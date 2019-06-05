@@ -13,10 +13,15 @@ model.train(
 )
 
 out = model.predict_segmentation(
-    inp= os.path.join(images_path, "001.Black_footed_Albatross", "Black_footed_Albatross_0001_796111.jpg"),
-    out_fname="/tmp/out.png"
+    inp= os.path.join(images_path, "001.Black_footed_Albatross", "Black_Footed_Albatross_0001_796111.jpg"),
+    out_fname="./tmp/out.png"
 )
 
 
 import matplotlib.pyplot as plt
 plt.imshow(out)
+
+model.evaluate_segmentation(
+    inp_images = [os.path.join(images_path, "001.Black_footed_Albatross", "Black_footed_Albatross_0001_796111.jpg")],
+    annotations = [os.path.join(segs_path, "001.Black_footed_Albatross", "Black_footed_Albatross_0001_796111.jpg")]
+)
