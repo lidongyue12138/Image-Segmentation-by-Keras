@@ -90,8 +90,6 @@ def get_segmentation_arr( path , nClasses ,  width , height , no_reshape=False )
 
 	for c in range(nClasses):
 		seg_labels[: , : , c ] = (img == c ).astype(int)
-
-
 	
 	if no_reshape:
 		return seg_labels
