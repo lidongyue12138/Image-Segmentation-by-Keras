@@ -1,5 +1,5 @@
 import argparse
-
+ 
 from keras.models import load_model
 import glob
 import cv2
@@ -106,7 +106,7 @@ def predict_multiple( model=None , inps=None , inp_dir=None, out_dir=None , chec
 
 
 
-def evaluate( model=None , inp_inmges=None , annotations=None , checkpoints_path=None ):
+def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path=None ):
 	
 	assert False , "not implemented "
 
