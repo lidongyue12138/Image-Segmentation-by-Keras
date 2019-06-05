@@ -76,10 +76,6 @@ def get_image_arr( path , width , height , imgNorm="sub_mean" , odering='channel
 	return img
 
 
-
-
-
-
 def get_segmentation_arr( path , nClasses ,  width , height , no_reshape=False ):
 
 	seg_labels = np.zeros((  height , width  , nClasses ))
@@ -120,7 +116,7 @@ def verify_segmentation_dataset( images_path , segs_path , n_classes ):
 		assert ( np.max(seg[:,:,0]) < n_classes) , "The pixel values of seg image should be from 0 to "+str(n_classes-1) + " . Found pixel value "+str(np.max(seg[:,:,0]))
 
 	print("Dataset verified! ")
-
+ 
 
 def image_segmentation_generator( images_path , segs_path ,  batch_size,  n_classes , input_height , input_width , output_height , output_width  , do_augment=False ):
 	

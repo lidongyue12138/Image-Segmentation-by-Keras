@@ -84,7 +84,7 @@ def train( model  ,
 			print("Loading the weights from latest checkpoint "  ,latest_checkpoint )
 			model.load_weights( latest_checkpoint )
 
-
+ 
 	if verify_dataset:
 		print("Verifying train dataset")
 		verify_segmentation_dataset( train_images , train_annotations , n_classes )

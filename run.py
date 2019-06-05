@@ -2,9 +2,9 @@ import keras_segmentation
 import os
 
 images_path = "./Datasets/CUB_200_2011/images/"
-segs_path = "./Datasets/CUB_200_2011/segmentations/"
+segs_path = "./Datasets/CUB_200_2011/converted/"
 
-model = keras_segmentation.models.unet.vgg_unet(n_classes=51 ,  input_height=416, input_width=608  )
+model = keras_segmentation.models.unet.vgg_unet(n_classes=2 ,  input_height=416, input_width=608  )
 
 model.train( 
     train_images =  images_path,
