@@ -113,6 +113,7 @@ def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path
 		pr = predict(model , inp )
 		gt = get_segmentation_arr( ann , model.n_classes ,  model.output_width , model.output_height  )
 		gt = gt.argmax(-1)
+		gt = np.reshape((pr.shape[0], pr.shape[1]))
 		iou = metrics.get_iou( gt , pr , model.n_classes )
 		ious.append( iou )
 	ious = np.array( ious )
