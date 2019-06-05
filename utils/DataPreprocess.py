@@ -110,8 +110,42 @@ def convert_segmmentations_VOC():
 
 
 def make_dataset_VOC():
-    pass
-
+    '''
+    Make necessary dirs
+    '''
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "train")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "train"))
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "test")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "test"))
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "train", "imgs")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "train", "imgs"))
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "train", "segs")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "train", "segs"))
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "test", "imgs")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "test", "imgs"))
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "test", "segs")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "test", "segs"))
+    ''' End '''
+    train_list = open(VOC_TRAIN_TXT, "r").readlines()
+    test_list = open(VOC_VAL_TXT, "r").readlines() 
+    for image_name in train_list:
+        image_name = image_name.strip()
+        # Save images
+        img = cv2.imread(os.path.join(VOC_DATA_PATH, "JPEGImages", image_name+".jpg"),1)
+        cv2.imwrite(os.path.join(VOC_DATA_PATH, "train", "imgs", image_name+".jpg"), img)
+        # Save segmentations
+        img = cv2.imread(os.path.join(VOC_DATA_PATH, "converted", image_name+".png"))
+        cv2.imwrite(os.path.join(VOC_DATA_PATH, "train", "segs", image_name+".png"), img)
+    for image_name in test_list:
+        image_name = image_name.strip()
+        # Save images
+        img = cv2.imread(os.path.join(VOC_DATA_PATH, "JPEGImages", image_name+".jpg"),1)
+        cv2.imwrite(os.path.join(VOC_DATA_PATH, "test", "imgs", image_name+".jpg"), img)
+        # Save segmentations
+        img = cv2.imread(os.path.join(VOC_DATA_PATH, "converted", image_name+".png"))
+        cv2.imwrite(os.path.join(VOC_DATA_PATH, "test", "segs", image_name+".png"), img)
+    
+    
 
 if __name__ == "__main__":
-    convert_segmmentations_VOC()
+    make_dataset_VOC()
