@@ -14,7 +14,7 @@ random.seed(0)
 class_colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255)   ) for _ in range(5000)  ]
 
 
-def get_pairs_from_paths( images_path , segs_path, recursive = True ):
+def get_pairs_from_paths( images_path , segs_path, recursive = False ):
 	if recursive == True:
 		images = glob.glob( 
 			os.path.join(images_path,"**/*.jpg")) + \
@@ -119,7 +119,7 @@ def verify_segmentation_dataset( images_path , segs_path , n_classes ):
 def image_segmentation_generator( images_path , segs_path ,  batch_size,  n_classes , input_height , input_width , output_height , output_width  , do_augment=False ):
 	
 
-	img_seg_pairs = get_pairs_from_paths( images_path , segs_path, recursive=False)
+	img_seg_pairs = get_pairs_from_paths( images_path , segs_path)
 	random.shuffle( img_seg_pairs )
 	zipped = itertools.cycle( img_seg_pairs  )
  
