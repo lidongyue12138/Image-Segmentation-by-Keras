@@ -9,6 +9,10 @@ CUB_DATA_PATH = "./Datasets/CUB_200_2011/"
 IMAGE_LIST_DIR = "./Datasets/CUB_200_2011/images.txt"
 TRAIN_TEST_DIR = "./Datasets/CUB_200_2011/train_test_split.txt"
 
+VOC_DATA_PATH = "./Datasets/VOC/"
+VOC_TRAIN_TXT = "./Datasets/VOC/ImageSets/Segmentation/train.txt"
+VOC_VAL_TXT = "./Datasets/VOC/ImageSets/Segmentation/train.txt"
+
 def convert_CUB(image):
     image[image[:, :, 0]!=0] = 1
     return image
@@ -49,23 +53,28 @@ def make_dataset_CUB():
     for line, trian_test in zip(image_list, train_test_list):
         num, image_dir = line.split()
         ifTrain = int(trian_test.split()[1])
+        
+        seg_dir = image_dir[:-4] + ".png"
 
         image_name = os.path.basename(image_dir)
+        seg_name = image_name.split(".")[0] + ".png"
         if ifTrain:
             # Save images
             img = cv2.imread(os.path.join(CUB_DATA_PATH, "images", image_dir))
             cv2.imwrite(os.path.join(CUB_DATA_PATH, "train", "imgs", image_name), img)
             # Save segmentations
-            img = cv2.imread(os.path.join(CUB_DATA_PATH, "converted", image_dir))
-            cv2.imwrite(os.path.join(CUB_DATA_PATH, "train", "segs", image_name), img)
+            img = cv2.imread(os.path.join(CUB_DATA_PATH, "converted", seg_dir))
+            cv2.imwrite(os.path.join(CUB_DATA_PATH, "train", "segs", seg_name), img)
         else:
             # Save images
             img = cv2.imread(os.path.join(CUB_DATA_PATH, "images", image_dir))
             cv2.imwrite(os.path.join(CUB_DATA_PATH, "test", "imgs", image_name), img)
             # Save segmentations
-            img = cv2.imread(os.path.join(CUB_DATA_PATH, "converted", image_dir))
-            cv2.imwrite(os.path.join(CUB_DATA_PATH, "test", "segs", image_name), img)
+            img = cv2.imread(os.path.join(CUB_DATA_PATH, "converted", seg_dir))
+            cv2.imwrite(os.path.join(CUB_DATA_PATH, "test", "segs", seg_name), img)
         
+def make_dataset_VOC():
+    pass
 
 if __name__ == "__main__":
     make_dataset_CUB()
