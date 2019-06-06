@@ -107,7 +107,7 @@ def predict_multiple( model=None , inps=None , inp_dir=None, out_dir=None , chec
 
 
 def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path=None ):
-
+ 
 	ious = []
 	for inp , ann   in tqdm( zip( inp_images , annotations )):
 		pr = predict(model , inp )
@@ -117,7 +117,7 @@ def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path
 		iou = metrics.get_iou( gt , pr , model.n_classes )
 		ious.append( iou )
 	ious = np.array( ious )
-	print("Class wise IoU "  ,  np.mean(ious , axis=0 ))
-	print("Total  IoU "  ,  np.mean(ious ))
+	print("Class wise IoU "  ,  np.nanmean(ious , axis=0 ))
+	print("Total  IoU "  ,  np.nanmean(ious ))
 
 

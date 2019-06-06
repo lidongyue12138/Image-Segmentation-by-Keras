@@ -8,5 +8,7 @@ def get_iou( gt , pr , n_classes ):
 		intersection = np.sum(( gt == cl )*( pr == cl ))
 		union = np.sum(np.maximum( ( gt == cl ) , ( pr == cl ) ))
 		iou = float(intersection)/( union + EPS )
+		if iou == 0:
+			iou = np.nan
 		class_wise[ cl ] = iou
 	return class_wise
