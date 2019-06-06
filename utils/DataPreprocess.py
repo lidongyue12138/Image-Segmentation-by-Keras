@@ -148,4 +148,9 @@ def make_dataset_VOC():
     
 
 if __name__ == "__main__":
-    make_dataset_VOC()
+    if not os.path.exists(os.path.join(VOC_DATA_PATH, "converted")):
+        os.makedirs(os.path.join(VOC_DATA_PATH, "converted"))
+    for image_dir in os.listdir(os.path.join(VOC_DATA_PATH, "SegmentationClass")):
+        img = cv2.imread(os.path.join(VOC_DATA_PATH, "SegmentationClass", image_dir), 1)
+        img = convert_VOC(img)
+        break

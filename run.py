@@ -15,7 +15,7 @@ train_segs_path = "./Datasets/VOC/train/segs/"
 test_images_path = "./Datasets/VOC/test/imgs/"
 test_segs_path = "./Datasets/VOC/test/segs"
 
-model = keras_segmentation.models.unet.vgg_unet(n_classes=21 ,  input_height=416, input_width=608)
+model = keras_segmentation.models.unet.mobilenet_unet(n_classes=21 ,  input_height=416, input_width=608)
 # model.load_weights("./tmp/vgg_unet_1.1")
 
 '''
@@ -24,7 +24,7 @@ Train
 model.train( 
     train_images =  train_images_path,
     train_annotations = train_segs_path,
-    checkpoints_path = "./tmp/voc_fcn_fcn_32_vgg" , epochs=5, verify_dataset = True
+    checkpoints_path = "./tmp/voc_unet_mobilenet_unet" , epochs=5, verify_dataset = True
 )
 
 '''
