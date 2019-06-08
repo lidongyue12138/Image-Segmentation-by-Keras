@@ -74,30 +74,31 @@ def make_dataset_CUB():
             img = cv2.imread(os.path.join(CUB_DATA_PATH, "converted", seg_dir))
             cv2.imwrite(os.path.join(CUB_DATA_PATH, "test", "segs", seg_name), img)
 
-def convert_VOC(image):
-    image[image[:, :] == [0, 0, 0]] = 0
-    image[image[:, :] == [0, 0, 128]] = 1
-    image[image[:, :] == [0, 128, 0]] = 2
-    image[image[:, :] == [0, 128, 128]] = 3
-    image[image[:, :] == [128, 0, 0]] = 4
-    image[image[:, :] == [128, 0, 128]] = 5
-    image[image[:, :] == [128, 128, 0]] = 6
-    image[image[:, :] == [128, 128, 128]] = 7
-    image[image[:, :] == [0, 0, 64]] = 8
-    image[image[:, :] == [0, 0, 192]] = 9
-    image[image[:, :] == [0, 128, 64]] = 10
-    image[image[:, :] == [0, 128, 192]] = 11
-    image[image[:, :] == [128, 0, 64]] = 12
-    image[image[:, :] == [128, 0, 192]] = 13
-    image[image[:, :] == [128, 128, 64]] = 14
-    image[image[:, :] == [128, 128, 192]] = 15
-    image[image[:, :] == [0, 64, 0]] = 16
-    image[image[:, :] == [0, 64, 128]] = 17
-    image[image[:, :] == [0, 192, 0]] = 18
-    image[image[:, :] == [0, 192, 128]] = 19
-    image[image[:, :] == [128, 64, 0]] = 20
-    image[image[:, :, 0] > 20] = 0 # Edge as Background
-    return image
+def convert_VOC(img):
+    img[(img[:,:,0]==0) * (img[:, :, 1]==0) * (img[:,:,2]==0)] = 0
+    img[(img[:,:,0]==0) * (img[:, :, 1]==0) * (img[:,:,2]==128)] = 1
+    img[(img[:,:,0]==0) * (img[:, :, 1]==128) * (img[:,:,2]==0)] = 2
+    img[(img[:,:,0]==0) * (img[:, :, 1]==128) * (img[:,:,2]==128)] = 3
+    img[(img[:,:,0]==128) * (img[:, :, 1]==0) * (img[:,:,2]==0)] = 4
+    img[(img[:,:,0]==128) * (img[:, :, 1]==0) * (img[:,:,2]==128)] = 5
+    img[(img[:,:,0]==128) * (img[:, :, 1]==128) * (img[:,:,2]==0)] = 6
+    img[(img[:,:,0]==128) * (img[:, :, 1]==128) * (img[:,:,2]==128)] = 7
+    img[(img[:,:,0]==0) * (img[:, :, 1]==0) * (img[:,:,2]==64)] = 8
+    img[(img[:,:,0]==0) * (img[:, :, 1]==0) * (img[:,:,2]==192)] = 9
+    img[(img[:,:,0]==0) * (img[:, :, 1]==128) * (img[:,:,2]==64)] = 10
+    img[(img[:,:,0]==0) * (img[:, :, 1]==128) * (img[:,:,2]==192)] = 11
+    img[(img[:,:,0]==128) * (img[:, :, 1]==0) * (img[:,:,2]==64)] = 12
+    img[(img[:,:,0]==128) * (img[:, :, 1]==0) * (img[:,:,2]==192)] = 13
+    img[(img[:,:,0]==128) * (img[:, :, 1]==128) * (img[:,:,2]==64)] = 14
+    img[(img[:,:,0]==128) * (img[:, :, 1]==128) * (img[:,:,2]==192)] = 15
+    img[(img[:,:,0]==0) * (img[:, :, 1]==64) * (img[:,:,2]==0)] = 16
+    img[(img[:,:,0]==0) * (img[:, :, 1]==64) * (img[:,:,2]==128)] = 17
+    img[(img[:,:,0]==0) * (img[:, :, 1]==192) * (img[:,:,2]==0)] = 18
+    img[(img[:,:,0]==0) * (img[:, :, 1]==192) * (img[:,:,2]==128)] = 19
+    img[(img[:,:,0]==128) * (img[:, :, 1]==64) * (img[:,:,2]==0)] = 20
+
+    img[img[:, :, 0] > 20] = 0 # Edge as Background
+    return img
 
 
 def convert_segmmentations_VOC():
@@ -148,9 +149,4 @@ def make_dataset_VOC():
     
 
 if __name__ == "__main__":
-    if not os.path.exists(os.path.join(VOC_DATA_PATH, "converted")):
-        os.makedirs(os.path.join(VOC_DATA_PATH, "converted"))
-    for image_dir in os.listdir(os.path.join(VOC_DATA_PATH, "SegmentationClass")):
-        img = cv2.imread(os.path.join(VOC_DATA_PATH, "SegmentationClass", image_dir), 1)
-        img = convert_VOC(img)
-        break
+    convert_segmentations_CUB()

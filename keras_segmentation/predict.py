@@ -19,7 +19,29 @@ import six
 
 random.seed(0)
 class_colors = [  ( random.randint(0,255),random.randint(0,255),random.randint(0,255)   ) for _ in range(5000)  ]
-
+voc_colors = [
+	[0,0,0],
+	[0,0,128],
+	[0,128,0],
+	[0,128,128],
+	[128,0,0],
+	[128,0,128],
+	[128,128,0],
+	[128,128,128],
+	[0,0,64],
+	[0,0,128],
+	[0,128,64],
+	[0,128,192],
+	[128,0,64],
+	[128,0,192],
+	[128,128,64],
+	[128,128,192],
+	[0,64,0],
+	[0,64,128],
+	[0,192,0],
+	[0,192,128],
+	[128,64,0]
+]
 
 def model_from_checkpoint_path( checkpoints_path ):
 
@@ -60,12 +82,15 @@ def predict( model=None , inp=None , out_fname=None , checkpoints_path=None    )
 	pr = pr.reshape(( output_height ,  output_width , n_classes ) ).argmax( axis=2 )
 
 	seg_img = np.zeros( ( output_height , output_width , 3  ) )
-	colors = class_colors
+	colors = voc_colors
 
-	for c in range(n_classes):
-		seg_img[:,:,0] += ( (pr[:,: ] == c )*( colors[c][0] )).astype('uint8')
-		seg_img[:,:,1] += ((pr[:,: ] == c )*( colors[c][1] )).astype('uint8')
-		seg_img[:,:,2] += ((pr[:,: ] == c )*( colors[c][2] )).astype('uint8')
+	for c in range(1, n_classes):
+		# seg_img[:,:,0] += ( (pr[:,: ] == c )*( colors[c][0] )).astype('uint8')
+		# seg_img[:,:,1] += ((pr[:,: ] == c )*( colors[c][1] )).astype('uint8')
+		# seg_img[:,:,2] += ((pr[:,: ] == c )*( colors[c][2] )).astype('uint8')
+		seg_img[ pr[:,: ] == c , 0] = colors[c][0]
+		seg_img[ pr[:,: ] == c , 1] = colors[c][1]
+		seg_img[ pr[:,: ] == c , 2] = colors[c][2]
 
 	seg_img = cv2.resize(seg_img  , (orininal_w , orininal_h ))
 
@@ -109,15 +134,31 @@ def predict_multiple( model=None , inps=None , inp_dir=None, out_dir=None , chec
 def evaluate( model=None , inp_images=None , annotations=None , checkpoints_path=None ):
  
 	ious = []
+	output_width = model.output_width
+	output_height  = model.output_height
+	input_width = model.input_width
+	input_height = model.input_height
+	n_classes = model.n_classes
+
+	count = 0
 	for inp , ann   in tqdm( zip( inp_images , annotations )):
-		pr = predict(model , inp )
+		x = get_image_arr( inp , input_width  , input_height , odering=IMAGE_ORDERING )
+		pr = model.predict( np.array([x]) )[0]
+		pr = pr.argmax(-1)
+
 		gt = get_segmentation_arr( ann , model.n_classes ,  model.output_width , model.output_height  )
 		gt = gt.argmax(-1)
-		gt = np.reshape(gt, (pr.shape[0], pr.shape[1]))
+		
 		iou = metrics.get_iou( gt , pr , model.n_classes )
+		# iou = metrics.get_iou( gt , gt , model.n_classes )
 		ious.append( iou )
+
+		# print(iou)
+		# count += 1
+		# if count > 20:
+		# 	break
 	ious = np.array( ious )
 	print("Class wise IoU "  ,  np.nanmean(ious , axis=0 ))
-	print("Total  IoU "  ,  np.nanmean(ious ))
+	print("Total  IoU "  ,  np.nanmean(ious))
 
 

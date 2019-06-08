@@ -112,3 +112,13 @@ Datasets/CUB_200_2011/README
 tmp/vgg_unet_1.0
 tmp/vgg_unet_1.1
 tmp/voc_fcn_fcn_32_vgg.4
+tmp/voc_unet_resnet50_unet_new.4
+tmp/voc_unet_resnet50_unet.4
+tmp/voc_segnet_resnet50_segnet.9
+tmp/voc_pspnet_vgg_pspnet.9
+tmp/voc_fcn_fcn_8_vgg.9
+tmp/cub_unet_vgg_unet_new.1
+tmp/cub_unet_vgg_unet.9
+tmp/cub_segnet_vgg_segnet.9
+tmp/cub_psspnet_vgg_pspnet.9
+tmp/cub_fcn_fcn_8_vgg.9
