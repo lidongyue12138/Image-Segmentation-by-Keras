@@ -1,222 +1,165 @@
-# Image Segmentation Keras : Implementation of Segnet, FCN, UNet, PSPNet and other models in Keras.
+# Image Segmentation via Keras
 
-[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/divamgupta)
-[![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+Implementation of Segnet, FCN, UNet, PSPNet and other models in Keras. This repo is cloned and modify based on https://github.com/divamgupta/image-segmentation-keras. Click here to see original [README](https://github.com/divamgupta/image-segmentation-keras)
 
+### Important Dependencies 
 
-Implementation of various Deep Image Segmentation models in keras. 
+- python 3.5+
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/sunshineatnoon/Paper-Collection/master/images/FCN1.png" width="50%" >
-</p>
+- Keras 2.0
+- python_opencv
+- Theano / Tensorflow / CNTK 
+- numpy, matplotlib
 
-## Our Other Repositories 
-- [Attention based Language Translation in Keras](https://github.com/divamgupta/attention-translation-keras)
-- [Ladder Network in Keras](https://github.com/divamgupta/ladder_network_keras)  model achives 98% test accuracy on MNIST with just 100 labeled examples
+Use following to install necessary dependencies
 
-### Contributors 
-
-Divam Gupta : https://divamgupta.com
-
-
-## Models 
-
-Following models are supported:
-
-| model_name       | Base Model        | Segmentation Model |
-|------------------|-------------------|--------------------|
-| fcn_8            | Vanilla CNN       | FCN8               |
-| fcn_32           | Vanilla CNN       | FCN8               |
-| fcn_8_vgg        | VGG 16            | FCN8               |
-| fcn_32_vgg       | VGG 16            | FCN32              |
-| fcn_8_resnet50   | Resnet-50         | FCN32              |
-| fcn_32_resnet50  | Resnet-50         | FCN32              |
-| fcn_8_mobilenet  | MobileNet         | FCN32              |
-| fcn_32_mobilenet | MobileNet         | FCN32              |
-| pspnet           | Vanilla CNN       | PSPNet             |
-| vgg_pspnet       | VGG 16            | PSPNet             |
-| resnet50_pspnet  | Resnet-50         | PSPNet             |
-| unet_mini        | Vanilla Mini CNN  | U-Net              |
-| unet             | Vanilla CNN       | U-Net              |
-| vgg_unet         | VGG 16            | U-Net              |
-| resnet50_unet    | Resnet-50         | U-Net              |
-| mobilenet_unet   | MobileNet         | U-Net              |
-| segnet           | Vanilla CNN       | Segnet             |
-| vgg_segnet       | VGG 16            | Segnet             |
-| resnet50_segnet  | Resnet-50         | Segnet             |
-| mobilenet_segnet | MobileNet         | Segnet             |
-
-
-Example results for the pre-trained models provided :
-
-Input Image            |  Output Segmentation Image 
-:-------------------------:|:-------------------------:
-![](sample_images/1_input.jpg)  |  ![](sample_images/1_output.png)
-![](sample_images/3_input.jpg)  |  ![](sample_images/3_output.png)
-
-
-## Getting Started
-
-### Prerequisites
-
-* Keras 2.0
-* opencv for python
-* Theano / Tensorflow / CNTK 
-
-```shell
-sudo apt-get install python-opencv
-sudo pip install --upgrade keras
 ```
-
-### Installing
-
-Install the module
-```shell
-git clone https://github.com/divamgupta/image-segmentation-keras
-cd image-segmentation-keras
 python setup.py install
 ```
-pip install will be available soon!
 
+### Prepare data for segmentation
 
-## Pre-trained models:
+I use [CUB-200-2011](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html) and [VOC-2012](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/#devkit) for image segmentation. You should first download these dataset. 
+
+After downloading the dataset, you should put corresponding dataset into `Datasets`, it should be like
+
+```
+-- Datasets
+---- CUB_200_2011
+------ images
+------ segmentations
+---- VOC
+------ JEPGImages
+------ SegmentationClass
+------ SegmentationObject
+```
+
+To prepare data for segmentation task, use `DataPreprocess.py` in `utils`, for example
+
+```python
+convert_segmentations_CUB()
+make_dataset_CUB()
+
+convert_segmentations_VOC()
+make_dataset_VOC
+```
+
+After that, there are `train` and `test` directory in above mentioned datasets
+
+### Run the code
+
+To run the code, you should see the example in `run.py`. 
+
 ```python
 import keras_segmentation
+from keras.models import load_model
+import tensorflow as tf
+import os
 
-model = keras_segmentation.pretrained.pspnet_50_ADE_20K() # load the pretrained model trained on ADE20k dataset
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
+os.environ["CUDA_VISIBLE_DEVICES"]="2, 3" 
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
 
-model = keras_segmentation.pretrained.pspnet_101_cityscapes() # load the pretrained model trained on Cityscapes dataset
+DATA_NAME = "VOC"
+EPOCH = [5, 10]
+CHECKOUTPOINT_PATH = "./tmp/voc_5_10"
 
-model = keras_segmentation.pretrained.pspnet_101_voc12() # load the pretrained model trained on Pascal VOC 2012 dataset
+if DATA_NAME == "VOC":
+    train_images_path = "./Datasets/VOC/train/imgs/"
+    train_segs_path = "./Datasets/VOC/train/segs/"
+    test_images_path = "./Datasets/VOC/test/imgs/"
+    test_segs_path = "./Datasets/VOC/test/segs"
+    class_num = 21
+if DATA_NAME == "CUB":
+    train_images_path = "./Datasets/CUB_200_2011/train/imgs/"
+    train_segs_path = "./Datasets/CUB_200_2011/train/segs/"
+    test_images_path = "./Datasets/CUB_200_2011/test/imgs/"
+    test_segs_path = "./Datasets/CUB_200_2011/test/segs"
+    class_num = 2
+'''
+Change model name
+'''
+model = keras_segmentation.models.unet.resnet50_unet(n_classes=class_num,  input_height=416, input_width=608)
+# model.load_weights("./tmp/cub_psspnet_vgg_pspnet.9")
+
+for i in range(EPOCH[0]):
+
+    '''
+    Train
+    '''
+    model.train( 
+        train_images =  train_images_path,
+        train_annotations = train_segs_path,
+        checkpoints_path = CHECKOUTPOINT_PATH , epochs=EPOCH[1], verify_dataset = False
+    )
+
+    '''
+    Output
+    '''
+    # for (i, image_dir) in enumerate(os.listdir(test_images_path)):
+    #     if i%50 == 0:
+    #         out = model.predict_segmentation(
+    #             inp= os.path.join(test_images_path, image_dir),
+    #             out_fname= os.path.join("./Output/", image_dir)
+    #         )
+    #         # import matplotlib.pyplot as plt
+    #         # plt.imshow(out)
+
+    '''
+    Test mIoU
+    '''
+    test_image_list = [os.path.join(test_images_path, i) for i in os.listdir(test_images_path)]
+    test_segs_list = [os.path.join(test_segs_path, i) for i in os.listdir(test_segs_path)]
+
+    model.evaluate_segmentation(
+        inp_images = test_image_list,
+        annotations = test_segs_list
+    )
+```
+
+To get output images, you should see example in `test.py`:
+
+```python
+import keras_segmentation
+import numpy as np
+import cv2
+import os
+
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
+os.environ["CUDA_VISIBLE_DEVICES"]="2,3" 
+
+DATA_NAME = "VOC"
+
+if DATA_NAME == "VOC":
+    train_images_path = "./Datasets/VOC/train/imgs/"
+    train_segs_path = "./Datasets/VOC/train/segs/"
+    test_images_path = "./Datasets/VOC/test/imgs/"
+    test_segs_path = "./Datasets/VOC/test/segs"
+    class_num = 21
+if DATA_NAME == "CUB":
+    train_images_path = "./Datasets/CUB_200_2011/train/imgs/"
+    train_segs_path = "./Datasets/CUB_200_2011/train/segs/"
+    test_images_path = "./Datasets/CUB_200_2011/test/imgs/"
+    test_segs_path = "./Datasets/CUB_200_2011/test/segs"
+    class_num = 2
+'''
+Change model name
+'''
+model = keras_segmentation.models.unet.resnet50_unet(n_classes=class_num,  input_height=416, input_width=608)
+model.load_weights("./tmp/voc_5_10.9")
 
 # load any of the 3 pretrained models
 
-out = model.predict_segmentation(
-    inp="input_image.jpg",
-    out_fname="out.png"
-)
+for (i, image_dir) in enumerate(os.listdir(test_images_path)):
+    if image_dir == "2011_002114.jpg":
+        out = model.predict_segmentation(
+            inp= os.path.join(test_images_path, image_dir),
+            out_fname= os.path.join("./Output_VOC/", image_dir))
 
 ```
 
+Change model names, checkpoint names to run the corresponding models.
 
-### Preparing the data for training
+### Contact
 
-You need to make two folders
-
-*  Images Folder - For all the training images 
-* Annotations Folder - For the corresponding ground truth segmentation images
-
-The filenames of the annotation images should be same as the filenames of the RGB images.
-
-The size of the annotation image for the corresponding RGB image should be same. 
-
-For each pixel in the RGB image, the class label of that pixel in the annotation image would be the value of the blue pixel.
-
-Example code to generate annotation images :
-
-```python
-import cv2
-import numpy as np
-
-ann_img = np.zeros((30,30,3)).astype('uint8')
-ann_img[ 3 , 4 ] = 1 # this would set the label of pixel 3,4 as 1
-
-cv2.imwrite( "ann_1.png" ,ann_img )
-```
-
-Only use bmp or png format for the annotation images.
-
-## Download the sample prepared dataset
-
-Download and extract the following:
-
-https://drive.google.com/file/d/0B0d9ZiqAgFkiOHR1NTJhWVJMNEU/view?usp=sharing
-
-You will get a folder named dataset1/ 
-
-
-## Using the python module
-
-You can import keras_segmentation in  your python script and use the API
-
-```python
-import keras_segmentation
-
-model = keras_segmentation.models.unet.vgg_unet(n_classes=51 ,  input_height=416, input_width=608  )
-
-model.train( 
-    train_images =  "dataset1/images_prepped_train/",
-    train_annotations = "dataset1/annotations_prepped_train/",
-    checkpoints_path = "/tmp/vgg_unet_1" , epochs=5
-)
-
-out = model.predict_segmentation(
-    inp="dataset1/images_prepped_test/0016E5_07965.png",
-    out_fname="/tmp/out.png"
-)
-
-
-import matplotlib.pyplot as plt
-plt.imshow(out)
-
-```
-
-
-## Usage via command line 
-You can also use the tool just using command line
-
-### Visualizing the prepared data
-
-You can also visualize your prepared annotations for verification of the prepared data.
-
-
-```shell
-python -m keras_segmentation verify_dataset \
- --images_path="dataset1/images_prepped_train/" \
- --segs_path="dataset1/annotations_prepped_train/"  \
- --n_classes=50
-```
-
-```shell
-python -m keras_segmentation visualize_dataset \
- --images_path="dataset1/images_prepped_train/" \
- --segs_path="dataset1/annotations_prepped_train/"  \
- --n_classes=50
-```
-
-
-
-### Training the Model
-
-To train the model run the following command:
-
-```shell
-python -m keras_segmentation train \
- --checkpoints_path="path_to_checkpoints" \
- --train_images="dataset1/images_prepped_train/" \
- --train_annotations="dataset1/annotations_prepped_train/" \
- --val_images="dataset1/images_prepped_test/" \
- --val_annotations="dataset1/annotations_prepped_test/" \
- --n_classes=50 \
- --input_height=320 \
- --input_width=640 \
- --model_name="vgg_unet"
-```
-
-Choose model_name from the table above
-
-
-
-### Getting the predictions
-
-To get the predictions of a trained model
-
-```shell
-python -m keras_segmentation predict \
- --checkpoints_path="path_to_checkpoints" \
- --input_path="dataset1/images_prepped_test/" \
- --output_path="path_to_predictions"
-
-```
-
-
+If you have any problem, please contact me through: lidongyue AT sjtu DOT edu DOT cn

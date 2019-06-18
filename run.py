@@ -4,12 +4,12 @@ import tensorflow as tf
 import os
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
-os.environ["CUDA_VISIBLE_DEVICES"]="0, 1" 
+os.environ["CUDA_VISIBLE_DEVICES"]="2, 3" 
 gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
 
-DATA_NAME = "CUB"
-EPOCH = [10, 10]
-CHECKOUTPOINT_PATH = "./tmp/cub_fcn_fcn_8_vgg"
+DATA_NAME = "VOC"
+EPOCH = [5, 10]
+CHECKOUTPOINT_PATH = "./tmp/voc_5_10"
 
 if DATA_NAME == "VOC":
     train_images_path = "./Datasets/VOC/train/imgs/"
@@ -26,7 +26,7 @@ if DATA_NAME == "CUB":
 '''
 Change model name
 '''
-model = keras_segmentation.models.fcn.fcn_8_vgg(n_classes=class_num,  input_height=416, input_width=608)
+model = keras_segmentation.models.unet.resnet50_unet(n_classes=class_num,  input_height=416, input_width=608)
 # model.load_weights("./tmp/cub_psspnet_vgg_pspnet.9")
 
 for i in range(EPOCH[0]):

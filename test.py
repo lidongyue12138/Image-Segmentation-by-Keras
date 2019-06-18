@@ -6,7 +6,7 @@ import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
 os.environ["CUDA_VISIBLE_DEVICES"]="2,3" 
 
-DATA_NAME = "CUB"
+DATA_NAME = "VOC"
 
 if DATA_NAME == "VOC":
     train_images_path = "./Datasets/VOC/train/imgs/"
@@ -23,13 +23,13 @@ if DATA_NAME == "CUB":
 '''
 Change model name
 '''
-model = keras_segmentation.models.pspnet.vgg_segnet(n_classes=class_num,  input_height=192, input_width=192)
-model.load_weights("./tmp/cub_psspnet_vgg_pspnet.9")
+model = keras_segmentation.models.unet.resnet50_unet(n_classes=class_num,  input_height=416, input_width=608)
+model.load_weights("./tmp/voc_5_10.9")
 
 # load any of the 3 pretrained models
 
 for (i, image_dir) in enumerate(os.listdir(test_images_path)):
-    if i%50 == 0:
+    if image_dir == "2011_002114.jpg":
         out = model.predict_segmentation(
             inp= os.path.join(test_images_path, image_dir),
-            out_fname= os.path.join("./Output_CUB/", image_dir))
+            out_fname= os.path.join("./Output_VOC/", image_dir))
